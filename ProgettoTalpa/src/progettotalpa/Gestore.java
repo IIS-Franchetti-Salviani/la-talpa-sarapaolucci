@@ -8,6 +8,6 @@ package progettotalpa;
  *
  * @author paolucci.sara
  */
-public class Gestore {
+public class Gestore{
     
 }

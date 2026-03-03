@@ -14,7 +14,8 @@ public class ProgettoTalpa {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        FormGioco f = new FormGioco();
+        f.setVisible(true);
     }
     
 }
