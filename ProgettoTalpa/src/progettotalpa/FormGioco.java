@@ -10,6 +10,10 @@ import java.util.ArrayList;
  * @author paolucci.sara
  */
 public class FormGioco extends javax.swing.JFrame {
+    private Gestore gestore;
+    private ImageIcon iconaTalpa;
+    private ArrayList<JButton> bottoni;
+
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FormGioco.class.getName());
 
@@ -19,10 +23,50 @@ public class FormGioco extends javax.swing.JFrame {
     public FormGioco() {
         initComponents();
         
-        
+        Giocatore g = new Giocatore("Player1");
+        gestore = new Gestore(6,g);
+        iconaTalpa = new ImageIcon(getClass().getResource("/img/talpa.jpg"));
+
+        // Mettiamo i bottoni già creati dentro una lista
+        bottoni = new ArrayList<>();
+        bottoni.add(btn1);
+        bottoni.add(btn2);
+        bottoni.add(btn3);
+        bottoni.add(btn4);
+        bottoni.add(btn5);
+        bottoni.add(btn6);
+
+        // Collego ogni bottone al metodo colpisci()
+        for (int i = 0; i < bottoni.size(); i++) {
+            int index = i;
+            bottoni.get(i).addActionListener(e -> {
+                gestore.colpisci(index);
+            });
+        }
+
+        // Timer che aggiorna la vista leggendo il model
+        Timer timer = new Timer(100, e -> aggiornaVista());
+        timer.start();
+
     }
     
-    
+    private void aggiornaVista() {
+
+        for (int i = 0; i < bottoni.size(); i++) {
+
+        if (gestore.getBuche().get(i).isOccupata()) {
+            bottoni.get(i).setIcon(iconaTalpa);
+        } 
+        else {
+            bottoni.get(i).setIcon(null);
+        }
+    }
+
+        lblPunteggio.setText(
+                "Punteggio: " + gestore.getGiocatore().getPunteggio()
+        );
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -136,7 +180,7 @@ public class FormGioco extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnstartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnstartActionPerformed
-        
+        gestore.start();
     }//GEN-LAST:event_btnstartActionPerformed
 
     /**
