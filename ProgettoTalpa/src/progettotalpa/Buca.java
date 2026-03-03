@@ -9,5 +9,14 @@ package progettotalpa;
  * @author paolucci.sara
  */
 public class Buca {
-    
+    private boolean occupata;
+
+    public synchronized boolean isOccupata() {
+        return occupata;
+    }
+
+    public synchronized void setOccupata(boolean occupata) {
+        this.occupata = occupata;
+    }
+
 }

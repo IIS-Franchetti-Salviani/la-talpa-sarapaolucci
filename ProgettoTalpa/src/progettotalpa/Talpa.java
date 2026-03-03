@@ -8,6 +8,25 @@ package progettotalpa;
  *
  * @author paolucci.sara
  */
-public class Talpa{
-    
+public class Talpa extends Thread{
+    private Buca buca;
+
+    public Talpa(Buca buca) {
+        this.buca = buca;
+    }
+
+    @Override
+    public void run() {
+        try {
+            buca.setOccupata(true);
+
+            Thread.sleep((int)(Math.random() * 1500) + 500);
+
+            buca.setOccupata(false);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
