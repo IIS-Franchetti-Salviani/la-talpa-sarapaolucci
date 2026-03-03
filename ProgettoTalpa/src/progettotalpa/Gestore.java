@@ -5,6 +5,7 @@
 package progettotalpa;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -24,5 +25,46 @@ public class Gestore extends Thread{
             buche.add(new Buca());
         }
     }
+    
+     @Override
+    public void run() {
+        Random rand = new Random();
+
+        while (inGioco) {
+            int index = rand.nextInt(buche.size());
+            Buca b = buche.get(index);
+
+            if (!b.isOccupata()) {
+                Talpa t = new Talpa(b);
+                t.start();
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {}
+        }
+    }
+
+    public void colpisci(int index) {
+        Buca b = buche.get(index);
+
+        if (b.isOccupata()) {
+            giocatore.aumentaPunteggio();
+            b.setOccupata(false);
+        }
+    }
+
+    public ArrayList<Buca> getBuche() {
+        return buche;
+    }
+
+    public Giocatore getGiocatore() {
+        return giocatore;
+    }
+
+    public void ferma() {
+        inGioco = false;
+    }
+
 
 }
