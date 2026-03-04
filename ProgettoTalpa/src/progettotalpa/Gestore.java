@@ -38,7 +38,6 @@ public class Gestore extends Thread{
                 Talpa t = new Talpa(b);
                 t.start();
             }
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {}
@@ -65,6 +64,5 @@ public class Gestore extends Thread{
     public void ferma() {
         inGioco = false;
     }
-
 
 }
