@@ -29,11 +29,9 @@ public class Gestore extends Thread{
      @Override
     public void run() {
         Random rand = new Random();
-
         while (inGioco) {
             int index = rand.nextInt(buche.size());
             Buca b = buche.get(index);
-
             if (!b.isOccupata()) {
                 Talpa t = new Talpa(b);
                 t.start();

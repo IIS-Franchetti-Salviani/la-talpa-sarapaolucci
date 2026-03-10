@@ -13,6 +13,8 @@ public class FormGioco extends javax.swing.JFrame {
     private Gestore gestore;
     private ImageIcon iconaTalpa;
     private ArrayList<JButton> bottoni;
+    private Timer timer;
+    private int time;
 
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FormGioco.class.getName());
@@ -26,8 +28,6 @@ public class FormGioco extends javax.swing.JFrame {
         Giocatore g = new Giocatore("Player1");
         gestore = new Gestore(6,g);
         iconaTalpa = new ImageIcon(getClass().getResource("/img/talpa.jpg"));
-
-        // Mettiamo i bottoni già creati dentro una lista
         bottoni = new ArrayList<>();
         bottoni.add(btn1);
         bottoni.add(btn2);
@@ -35,8 +35,7 @@ public class FormGioco extends javax.swing.JFrame {
         bottoni.add(btn4);
         bottoni.add(btn5);
         bottoni.add(btn6);
-
-        // Collego ogni bottone al metodo colpisci()
+        
         for (int i = 0; i < bottoni.size(); i++) {
             int index = i;
             bottoni.get(i).addActionListener(e -> {
@@ -44,10 +43,6 @@ public class FormGioco extends javax.swing.JFrame {
             });
         }
 
-        // Timer che aggiorna la vista leggendo il model
-        Timer timer = new Timer(100, e -> aggiornaVista());
-        timer.start();
-        
     }
     
     private void aggiornaVista() {
@@ -60,6 +55,12 @@ public class FormGioco extends javax.swing.JFrame {
             }
         }
         lblPunteggio.setText("Punteggio: " + gestore.getGiocatore().getPunteggio());
+        time--;
+        lblT.setText(""+time);
+        if(time == 0){
+            gestore.ferma();
+            timer.stop();
+        }
     }
 
 
@@ -82,6 +83,8 @@ public class FormGioco extends javax.swing.JFrame {
         btn6 = new javax.swing.JButton();
         lblPunteggio = new javax.swing.JLabel();
         btnstart = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        lblT = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,6 +120,13 @@ public class FormGioco extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Tempo");
+
+        lblT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblT.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -126,10 +136,17 @@ public class FormGioco extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(202, 202, 202))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblT)))
                 .addGap(66, 66, 66)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -168,7 +185,9 @@ public class FormGioco extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnstart)
-                    .addComponent(lblPunteggio))
+                    .addComponent(lblPunteggio)
+                    .addComponent(jLabel2)
+                    .addComponent(lblT))
                 .addGap(37, 37, 37))
         );
 
@@ -187,7 +206,11 @@ public class FormGioco extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnstartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnstartActionPerformed
+        time = 30;
+        timer = new Timer(1000, e -> aggiornaVista());
+        timer.start();
         gestore.start();
+        btnstart.setEnabled(false);
     }//GEN-LAST:event_btnstartActionPerformed
 
     /**
@@ -224,7 +247,9 @@ public class FormGioco extends javax.swing.JFrame {
     private javax.swing.JButton btn6;
     private javax.swing.JButton btnstart;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblPunteggio;
+    private javax.swing.JLabel lblT;
     // End of variables declaration//GEN-END:variables
 }
