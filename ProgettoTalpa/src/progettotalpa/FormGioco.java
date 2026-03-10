@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package progettotalpa;
+import java.io.IOException;
 import javax.swing.*;
 import java.util.ArrayList;
 /**
@@ -13,8 +14,11 @@ public class FormGioco extends javax.swing.JFrame {
     private Gestore gestore;
     private ImageIcon iconaTalpa;
     private ArrayList<JButton> bottoni;
-    private Timer timer;
+    private Timer timer,t;
     private int time;
+    private Giocatore g;
+    private int record;
+    private FileManager f = new FileManager();
 
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FormGioco.class.getName());
@@ -22,10 +26,13 @@ public class FormGioco extends javax.swing.JFrame {
     /**
      * Creates new form FormGioco
      */
-    public FormGioco() {
+    public FormGioco() throws IOException{
         initComponents();
         
-        Giocatore g = new Giocatore("Player1");
+        String rec = f.leggi();
+        lblRecord.setText("Record "+rec);
+        
+        g = new Giocatore("Player1");
         gestore = new Gestore(6,g);
         iconaTalpa = new ImageIcon(getClass().getResource("/img/talpa.jpg"));
         bottoni = new ArrayList<>();
@@ -42,24 +49,43 @@ public class FormGioco extends javax.swing.JFrame {
                 gestore.colpisci(index);
             });
         }
-
+        
+        timer = new Timer(100, e -> aggiornaVista());
+        timer.start();
+        
+        t = new Timer(1000, e -> {
+            try {
+                aggiornaTempo();
+            } catch (IOException ex) {
+                System.getLogger(FormGioco.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        });
+        
     }
     
     private void aggiornaVista() {
         for (int i = 0; i < bottoni.size(); i++) {
-            if (gestore.getBuche().get(i).isOccupata()) {
-                bottoni.get(i).setIcon(iconaTalpa);
+            if (!gestore.getBuche().get(i).isOccupata()) {
+                bottoni.get(i).setIcon(null);
             } 
             else {
-                bottoni.get(i).setIcon(null);
+                bottoni.get(i).setIcon(iconaTalpa);
             }
         }
-        lblPunteggio.setText("Punteggio: " + gestore.getGiocatore().getPunteggio());
+        lblPunteggio.setText("Punti " + gestore.getGiocatore().getPunteggio());
+        
+    }
+    
+    public void aggiornaTempo() throws IOException{
         time--;
-        lblT.setText(""+time);
+        lblt.setText("Tempo "+time);
         if(time == 0){
             gestore.ferma();
-            timer.stop();
+            t.stop();
+            if(g.getPunteggio()> record){
+                f.scrivi(g.getPunteggio());
+                record = g.getPunteggio();
+            }
         }
     }
 
@@ -83,8 +109,9 @@ public class FormGioco extends javax.swing.JFrame {
         btn6 = new javax.swing.JButton();
         lblPunteggio = new javax.swing.JLabel();
         btnstart = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        lblt = new javax.swing.JLabel();
         lblT = new javax.swing.JLabel();
+        lblRecord = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,7 +133,7 @@ public class FormGioco extends javax.swing.JFrame {
 
         btn6.setBackground(new java.awt.Color(0, 102, 0));
 
-        lblPunteggio.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblPunteggio.setFont(new java.awt.Font("Modern No. 20", 1, 18)); // NOI18N
         lblPunteggio.setForeground(new java.awt.Color(255, 255, 255));
         lblPunteggio.setText("Punti");
 
@@ -120,35 +147,34 @@ public class FormGioco extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Tempo");
+        lblt.setFont(new java.awt.Font("Modern No. 20", 1, 18)); // NOI18N
+        lblt.setForeground(new java.awt.Color(255, 255, 255));
+        lblt.setText("Tempo");
 
         lblT.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblT.setForeground(new java.awt.Color(255, 255, 255));
+
+        lblRecord.setFont(new java.awt.Font("Modern No. 20", 1, 18)); // NOI18N
+        lblRecord.setForeground(new java.awt.Color(255, 255, 255));
+        lblRecord.setText("Record");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(202, 202, 202))
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(67, 67, 67)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
+                        .addGap(12, 12, 12)
+                        .addComponent(lblt, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblT)))
                 .addGap(66, 66, 66)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -161,18 +187,24 @@ public class FormGioco extends javax.swing.JFrame {
                                 .addComponent(btn6, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(77, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
+                        .addGap(25, 25, 25)
                         .addComponent(btnstart)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblPunteggio, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(61, 61, 61))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPunteggio, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(59, 59, 59))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(181, 181, 181)
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(32, 32, 32)
                 .addComponent(jLabel1)
-                .addGap(45, 45, 45)
+                .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,13 +214,21 @@ public class FormGioco extends javax.swing.JFrame {
                     .addComponent(btn6, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn5, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnstart)
-                    .addComponent(lblPunteggio)
-                    .addComponent(jLabel2)
-                    .addComponent(lblT))
-                .addGap(37, 37, 37))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblPunteggio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblRecord)
+                        .addGap(26, 26, 26))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblT)
+                        .addGap(59, 59, 59))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnstart)
+                            .addComponent(lblt))
+                        .addGap(37, 37, 37))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -207,8 +247,7 @@ public class FormGioco extends javax.swing.JFrame {
 
     private void btnstartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnstartActionPerformed
         time = 30;
-        timer = new Timer(1000, e -> aggiornaVista());
-        timer.start();
+        t.start();
         gestore.start();
         btnstart.setEnabled(false);
     }//GEN-LAST:event_btnstartActionPerformed
@@ -216,26 +255,8 @@ public class FormGioco extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new FormGioco().setVisible(true));
+    public static void main(String args[]) throws IOException{
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -247,9 +268,10 @@ public class FormGioco extends javax.swing.JFrame {
     private javax.swing.JButton btn6;
     private javax.swing.JButton btnstart;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblPunteggio;
+    private javax.swing.JLabel lblRecord;
     private javax.swing.JLabel lblT;
+    private javax.swing.JLabel lblt;
     // End of variables declaration//GEN-END:variables
 }

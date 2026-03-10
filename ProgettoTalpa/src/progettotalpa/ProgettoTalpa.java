@@ -4,6 +4,8 @@
  */
 package progettotalpa;
 
+import java.io.IOException;
+
 /**
  *
  * @author paolucci.sara
@@ -12,9 +14,10 @@ public class ProgettoTalpa {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
-        FormGioco f = new FormGioco();
+    public static void main(String[] args) throws IOException {
+       FormGioco f = new FormGioco();
         f.setVisible(true);
     }
     

@@ -34,7 +34,7 @@ public class Gestore extends Thread{
             Buca b = buche.get(index);
             if (!b.isOccupata()) {
                 Talpa t = new Talpa(b);
-                t.start();
+                t.start();    
             }
             try {
                 Thread.sleep(1000);

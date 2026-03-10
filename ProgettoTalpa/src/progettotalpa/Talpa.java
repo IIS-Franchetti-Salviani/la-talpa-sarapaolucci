@@ -20,7 +20,7 @@ public class Talpa extends Thread{
         try {
             buca.setOccupata(true);
 
-            Thread.sleep((int)(Math.random() * 1500) + 500);
+            Thread.sleep(2500);
 
             buca.setOccupata(false);
 
